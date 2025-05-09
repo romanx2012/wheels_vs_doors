@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wheels vs Doors - The Debate of the Century</title>
+  <style>
+    :root {
+      --bg-color: linear-gradient(135deg, #111, #222);
+      --text-color: #fff;
+      --accent-color: orange;
+      --box-bg: #333;
+    }
+
+    body.neon {
+      --bg-color: linear-gradient(135deg, #0ff, #00f);
+      --text-color: #0ff;
+      --accent-color: #ff00ff;
+      --box-bg: rgba(0, 0, 0, 0.5);
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 3rem;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .debate-box {
+      background-color: var(--box-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 30px var(--accent-color);
+      margin-top: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      background: var(--accent-color);
+      color: #111;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: gold;
+    }
+    .footer {
+      margin-top: 4rem;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .gif-container {
+      margin-top: 30px;
+    }
+    .scoreboard {
+      margin-top: 30px;
+      font-size: 1.5rem;
+      background: #222;
+      border: 2px solid var(--accent-color);
+      border-radius: 10px;
+      display: inline-block;
+      padding: 1rem 2rem;
+      color: gold;
+    }
+    #themeToggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent-color);
+      color: #111;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle">NEON MODE</button>
+  <h1>WHEELS vs DOORS</h1>
+  <p>The most important question of our time.</p>
+  <div class="debate-box">
+    <p><strong>Click the button below</strong> to enter your answer and see who really rules the world: Wheels or Doors?</p>
+    <button onclick="startDebate()">SETTLE THE DEBATE</button>
+    <div class="scoreboard" id="scoreboard">Wheels: 0 | Doors: 0</div>
+    <div class="gif-container" id="gifContainer"></div>
+  </div>
+
+  <div class="footer">
+    Created with chaos by Roman & ChatGPT. We count suitcase wheels.
+  </div>
+
+  <audio id="drumroll" src="https://assets.mixkit.co/sfx/preview/mixkit-drum-roll-announcement-2420.mp3"></audio>
+  <audio id="victory" src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3"></audio>
+  <audio id="fail" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3"></audio>
+
+  <canvas class="confetti"></canvas>
+
+  <script>
+    let wheelWins = 0;
+    let doorWins = 0;
+
+    const drumroll = document.getElementById("drumroll");
+    const victory = document.getElementById("victory");
+    const fail = document.getElementById("fail");
+    const gifContainer = document.getElementById("gifContainer");
+    const scoreboard = document.getElementById("scoreboard");
+    const themeToggle = document.getElementById("themeToggle");
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("neon");
+      themeToggle.innerText = document.body.classList.contains("neon") ? "DEFAULT MODE" : "NEON MODE";
+    });
+
+    function startDebate() {
+      drumroll.play();
+      gifContainer.innerHTML = '';
+      setTimeout(() => {
+        const choice = prompt("Do you believe there are more WHEELS or DOORS in the world?").toLowerCase();
+        const result = runSimulation(choice);
+        showResults(result, choice);
+      }, 3000);
+    }
+
+    function runSimulation(choice) {
+      const wheels = 1600000000 * 4 + 2000000000 * 2 + 100000000 * 5 + 800000000 * 4 + 100000000 * 2 + 3000000000;
+      const doors = 2000000000 * 10 + 1600000000 * 4 + 3000000000 + 1500000000 + 500000000;
+      return {
+        wheels,
+        doors,
+        winner: wheels > doors ? "wheels" : "doors",
+        userWon: (choice === "wheels" && wheels > doors) || (choice === "doors" && doors > wheels)
+      };
+    }
+
+    function showResults(result, choice) {
+      console.clear();
+      console.table({
+        "Total Wheels": result.wheels.toLocaleString(),
+        "Total Doors": result.doors.toLocaleString()
+      });
+
+      if (result.winner === "wheels") wheelWins++;
+      else doorWins++;
+
+      scoreboard.innerText = `Wheels: ${wheelWins} | Doors: ${doorWins}`;
+
+      if (result.userWon) {
+        console.log(`YOU CHOSE ${choice.toUpperCase()} AND YOU WERE RIGHT!`);
+        victory.play();
+        launchConfetti();
+        showGif("https://media.giphy.com/media/26FL1soZ3STRDSLGU/giphy.gif");
+      } else {
+        console.log(`YOU CHOSE ${choice.toUpperCase()} BUT THE OTHER SIDE WON.`);
+        fail.play();
+        showGif("https://media.giphy.com/media/3og0IPxMM0erATueVW/giphy.gif");
+      }
+    }
+
+    function showGif(url) {
+      gifContainer.innerHTML = `<img src="${url}" alt="result gif" width="300" style="margin-top: 20px; border-radius: 10px;" />`;
+    }
+
+    function launchConfetti() {
+      const canvas = document.querySelector(".confetti");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      for (let i = 0; i < 150; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          w: 10 + Math.random() * 10,
+          h: 10 + Math.random() * 10,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+          dy: Math.random() * 3 + 2,
+          dx: Math.random() * 2 - 1
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let p of pieces) {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.w, p.h);
+          p.y += p.dy;
+          p.x += p.dx;
+          if (p.y > canvas.height) p.y = -20;
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+  </script>
+</body>
+</html>
