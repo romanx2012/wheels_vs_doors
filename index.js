@@ -7,47 +7,46 @@ const drumroll = document.getElementById("drumroll");
 const victory = document.getElementById("victory");
 const fail = document.getElementById("fail");
 
-// Vote submission
+// Submit vote
 async function submitVote(choice) {
-  try {
-    choice = choice.trim().toLowerCase();
-    if (choice !== "wheels" && choice !== "doors") {
-      alert("Please enter either 'wheels' or 'doors'.");
-      return;
-    }
+  choice = choice.trim().toLowerCase();
 
+  if (choice !== "wheels" && choice !== "doors") {
+    alert("Please enter only 'wheels' or 'doors'!");
+    return false;
+  }
+
+  try {
     await fetch(`${backendUrl}/vote`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ choice }),
     });
 
     fetchResults();
+    return true;
   } catch (err) {
     scoreboard.textContent = "Error sending your vote. Try again later.";
+    return false;
   }
 }
 
-// Get updated vote totals
+// Fetch and animate results
 async function fetchResults() {
   try {
     const res = await fetch(`${backendUrl}/results`);
     const data = await res.json();
     animateScore(data.wheels, data.doors);
-  } catch (err) {
+  } catch {
     scoreboard.textContent = "Could not load results.";
   }
 }
 
-// Animate scoreboard count
+// Animate live score updates
 function animateScore(wheels, doors) {
   const wheelsEl = document.getElementById("wheels-count");
   const doorsEl = document.getElementById("doors-count");
-
-  let currentWheels = 0;
-  let currentDoors = 0;
+  let currentWheels = 0, currentDoors = 0;
 
   const wheelsInterval = setInterval(() => {
     if (currentWheels < wheels) {
@@ -56,7 +55,7 @@ function animateScore(wheels, doors) {
     } else {
       clearInterval(wheelsInterval);
     }
-  }, 30);
+  }, 20);
 
   const doorsInterval = setInterval(() => {
     if (currentDoors < doors) {
@@ -65,41 +64,45 @@ function animateScore(wheels, doors) {
     } else {
       clearInterval(doorsInterval);
     }
-  }, 30);
+  }, 20);
 }
 
-// Handle voting interaction
-function startDebate() {
+// Handle vote interaction
+async function startDebate() {
   drumroll.play();
   gifContainer.innerHTML = '';
 
-  setTimeout(() => {
-    const choice = prompt("Do you believe there are more WHEELS or DOORS in the world?");
-    if (choice) {
-      submitVote(choice);
-      if (choice.trim().toLowerCase() === "wheels") {
-        showGif("https://media.giphy.com/media/f9k1tV7HyORcngKF8v/giphy.gif");
-        victory.play();
-      } else if (choice.trim().toLowerCase() === "doors") {
-        showGif("https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif");
-        victory.play();
-      } else {
-        showGif("https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif");
-        fail.play();
-      }
+  setTimeout(async () => {
+    const rawInput = prompt("Are you #TeamWheels or #TeamDoors?");
+    if (!rawInput) return;
+
+    const choice = rawInput.trim().toLowerCase();
+    const voteSuccess = await submitVote(choice);
+
+    if (!voteSuccess) return;
+
+    if (choice === "wheels") {
+      showGif("https://media.giphy.com/media/f9k1tV7HyORcngKF8v/giphy.gif");
+      victory.play();
+    } else if (choice === "doors") {
+      showGif("https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif");
+      victory.play();
+    } else {
+      showGif("https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif");
+      fail.play();
     }
   }, 3000);
 }
 
-// Funny animation
+// Show funny result gif
 function showGif(url) {
   gifContainer.innerHTML = `<img src="${url}" alt="result gif" class="funny-gif" />`;
 }
 
-// Neon mode toggle
+// Neon theme toggle
 document.getElementById("themeToggle").addEventListener("click", () => {
   document.body.classList.toggle("neon");
 });
 
-// Load results on startup
+// Load initial results
 window.onload = fetchResults;
