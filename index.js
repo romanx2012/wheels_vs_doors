@@ -3,6 +3,12 @@ const backendUrl = "https://romanx2012-wheels-vs-doors-backend.replit.app";
 // Submit vote
 async function submitVote(choice) {
   try {
+    choice = choice.trim().toLowerCase(); // sanitize input
+    if (choice !== "wheels" && choice !== "doors") {
+      alert("Please enter either 'wheels' or 'doors'.");
+      return;
+    }
+
     await fetch(`${backendUrl}/vote`, {
       method: "POST",
       headers: {
@@ -27,3 +33,18 @@ async function fetchResults() {
     document.getElementById("results").textContent = "Could not load results.";
   }
 }
+
+// Button interaction
+function startDebate() {
+  drumroll.play();
+  gifContainer.innerHTML = '';
+  setTimeout(() => {
+    const choice = prompt("Do you believe there are more WHEELS or DOORS in the world?");
+    if (choice) {
+      submitVote(choice);
+    }
+  }, 3000);
+} 
+
+// Immediately fetch and display results when page loads
+window.onload = fetchResults;
