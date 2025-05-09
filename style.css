@@ -1,0 +1,122 @@
+/* === style.css === */
+:root {
+    --bg-color: linear-gradient(135deg, #111, #222);
+    --text-color: #fff;
+    --accent-color: orange;
+    --box-bg: #333;
+  }
+  
+  body.neon {
+    --bg-color: linear-gradient(135deg, #0ff, #00f);
+    --text-color: #0ff;
+    --accent-color: #ff00ff;
+    --box-bg: rgba(0, 0, 0, 0.5);
+  }
+  
+  body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    padding: 3rem;
+    overflow-x: hidden;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .debate-box {
+    background-color: var(--box-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 30px var(--accent-color);
+    margin-top: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: pulseBox 2s infinite alternate;
+  }
+  
+  button {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    background: var(--accent-color);
+    color: #111;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  button:hover {
+    background: gold;
+  }
+  
+  .footer {
+    margin-top: 4rem;
+    font-size: 0.9rem;
+    color: #aaa;
+  }
+  
+  .scoreboard {
+    margin-top: 30px;
+    font-size: 2rem;
+    background: #111;
+    border: 2px solid var(--accent-color);
+    border-radius: 15px;
+    display: inline-block;
+    padding: 1rem 2rem;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 0 20px var(--accent-color);
+    transition: transform 0.2s ease-in-out;
+    animation: bounce 2s infinite ease-in-out;
+  }
+  
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+  
+  @keyframes pulseBox {
+    0% {
+      box-shadow: 0 0 20px var(--accent-color);
+    }
+    100% {
+      box-shadow: 0 0 40px var(--accent-color);
+    }
+  }
+  
+  #themeToggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--accent-color);
+    color: #111;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 9999;
+  }
+  
+  .confetti {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999;
+  }
+  
+  .gif-container {
+    margin-top: 30px;
+  }
