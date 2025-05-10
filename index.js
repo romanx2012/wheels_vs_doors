@@ -1,4 +1,4 @@
-const backendUrl = "https://romanx2012-wheels-vs-doors-backend.replit.app";
+const backendUrl = "https://ae6b9677-7677-4e66-8e1c-d7c044f1b5ff-00-1u8ds941bs0j9.kirk.replit.dev";
 
 // DOM elements
 const scoreboard = document.getElementById("scoreboard");
@@ -6,6 +6,8 @@ const gifContainer = document.getElementById("gifContainer");
 const drumroll = document.getElementById("drumroll");
 const victory = document.getElementById("victory");
 const fail = document.getElementById("fail");
+const wheelsEl = document.getElementById("wheels-count");
+const doorsEl = document.getElementById("doors-count");
 
 // Submit vote
 async function submitVote(choice) {
@@ -22,7 +24,6 @@ async function submitVote(choice) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ choice }),
     });
-
     fetchResults();
     return true;
   } catch (err) {
@@ -31,7 +32,7 @@ async function submitVote(choice) {
   }
 }
 
-// Fetch and animate results
+// Get and display vote results
 async function fetchResults() {
   try {
     const res = await fetch(`${backendUrl}/results`);
@@ -42,11 +43,10 @@ async function fetchResults() {
   }
 }
 
-// Animate live score updates
+// Animate scoreboard numbers
 function animateScore(wheels, doors) {
-  const wheelsEl = document.getElementById("wheels-count");
-  const doorsEl = document.getElementById("doors-count");
-  let currentWheels = 0, currentDoors = 0;
+  let currentWheels = 0;
+  let currentDoors = 0;
 
   const wheelsInterval = setInterval(() => {
     if (currentWheels < wheels) {
@@ -67,8 +67,13 @@ function animateScore(wheels, doors) {
   }, 20);
 }
 
-// Handle vote interaction
-async function startDebate() {
+// Show a fun GIF based on vote
+function showGif(url) {
+  gifContainer.innerHTML = `<img src="${url}" alt="result gif" class="funny-gif" />`;
+}
+
+// Handle vote button
+function startDebate() {
   drumroll.play();
   gifContainer.innerHTML = '';
 
@@ -77,15 +82,15 @@ async function startDebate() {
     if (!rawInput) return;
 
     const choice = rawInput.trim().toLowerCase();
-    const voteSuccess = await submitVote(choice);
+    const accepted = await submitVote(choice);
 
-    if (!voteSuccess) return;
+    if (!accepted) return;
 
     if (choice === "wheels") {
-      showGif("https://media.giphy.com/media/f9k1tV7HyORcngKF8v/giphy.gif");
+      showGif("https://media.giphy.com/media/l0MYydaQCDQ6w5qre/giphy.gif");
       victory.play();
     } else if (choice === "doors") {
-      showGif("https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif");
+      showGif("https://media.giphy.com/media/QBd2kLB5qDmysEXre9/giphy.gif");
       victory.play();
     } else {
       showGif("https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif");
@@ -94,15 +99,10 @@ async function startDebate() {
   }, 3000);
 }
 
-// Show funny result gif
-function showGif(url) {
-  gifContainer.innerHTML = `<img src="${url}" alt="result gif" class="funny-gif" />`;
-}
-
-// Neon theme toggle
+// Theme toggle
 document.getElementById("themeToggle").addEventListener("click", () => {
   document.body.classList.toggle("neon");
 });
 
-// Load initial results
+// Load vote count on page load
 window.onload = fetchResults;

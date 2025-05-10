@@ -10,27 +10,18 @@
   <button id="themeToggle">NEON MODE</button>
   <h1>WHEELS vs DOORS</h1>
   <p>The most important question of our time.</p>
-  
   <div class="debate-box">
     <p><strong>Click below</strong> to cast your vote. Are you #TeamWheels or #TeamDoors?</p>
     <button onclick="startDebate()">CAST YOUR VOTE</button>
-    <div class="scoreboard">
-      <span id="wheelsCount">Wheels: 0</span>
-      <span id="doorsCount">Doors: 0</span>
+    <div class="scoreboard" id="scoreboard">
+      Wheels: <span id="wheels-count">0</span> | Doors: <span id="doors-count">0</span>
     </div>
     <div class="gif-container" id="gifContainer"></div>
-    <div id="results" class="results"></div>
   </div>
 
   <div class="footer">
-    Created with chaotic love by Roman & ChatGPT. Yes, suitcase wheels count.
+    Created with chaotic love by Roman. Yes, suitcase wheels count.
   </div>
-
-  <audio id="drumroll" src="https://assets.mixkit.co/sfx/preview/mixkit-drum-roll-announcement-2420.mp3"></audio>
-  <audio id="victory" src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3"></audio>
-  <audio id="fail" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3"></audio>
-
-  <canvas class="confetti"></canvas>
 
   <script src="index.js"></script>
 </body>
